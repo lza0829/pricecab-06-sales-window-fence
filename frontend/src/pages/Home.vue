@@ -33,5 +33,18 @@ onMounted(async () => {
     <div class="stat"><div class="label">待生效</div><div class="value">{{ dash.scheduled_count }}</div></div>
     <div class="stat"><div class="label">已应用</div><div class="value">{{ dash.applied_count }}</div></div>
     <div class="stat"><div class="label">到期待应用</div><div class="value">{{ dash.due_now }}</div></div>
+    <div class="stat"><div class="label">对账报告</div><div class="value">{{ dash.report_count }}</div></div>
+    <div class="stat"><div class="label">未处置旗标</div><div class="value">{{ dash.open_flag_count }}</div></div>
+    <div class="stat"><div class="label">拦改价次数</div><div class="value">{{ dash.rejection_count }}</div></div>
+  </div>
+
+  <div v-if="dash && dash.latest_report" class="panel">
+    <h2>最新对账报告 {{ dash.latest_report.report_no }}（{{ dash.latest_report.created_at }}）</h2>
+    <p class="msg">
+      窗 {{ dash.latest_report.resolved_start }} ~ {{ dash.latest_report.resolved_end }}；
+      窗外排除 {{ dash.latest_report.excluded_count }}，窗内 {{ dash.latest_report.in_window_count }}，
+      一致 {{ dash.latest_report.match_count }}，不一致 {{ dash.latest_report.mismatch_count }}，
+      缺价 {{ dash.latest_report.missing_count }}。
+    </p>
   </div>
 </template>

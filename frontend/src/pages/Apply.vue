@@ -4,6 +4,7 @@ import { api } from '../api'
 
 const clock = ref('')
 const batches = ref([])
+const rejections = ref([])
 const msg = ref('')
 const err = ref('')
 const result = ref(null)
@@ -12,6 +13,7 @@ async function refresh() {
   const c = await api.clock()
   clock.value = c.business_clock || ''
   batches.value = await api.batches()
+  rejections.value = await api.applyRejections()
 }
 
 async function saveClock() {
@@ -77,9 +79,27 @@ onMounted(() => refresh().catch((e) => (err.value = e.message)))
           <td>{{ b.clock_at }}</td>
           <td>{{ b.ticket_count }}</td>
           <td>{{ b.line_count }}</td>
-          <td><span class="tag ok">{{ b.status }}</span></td>
+          <td><span class="tag" :class="b.status === 'done' ? 'ok' : 'warn'">{{ b.status }}</span></td>
           <td>{{ b.created_at }}</td>
         </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h2>应用入口拒绝记录（与对账旗标互证）</h2>
+    <table>
+      <thead>
+        <tr><th>改价单</th><th>SKU</th><th>拒绝原因</th><th>时间</th></tr>
+      </thead>
+      <tbody>
+        <tr v-for="r in rejections" :key="r.id">
+          <td>{{ r.ticket_no }}</td>
+          <td>{{ r.sku_code }}</td>
+          <td>{{ r.reason }}</td>
+          <td>{{ r.created_at }}</td>
+        </tr>
+        <tr v-if="!rejections.length"><td colspan="4" class="msg">暂无拒绝记录</td></tr>
       </tbody>
     </table>
   </div>

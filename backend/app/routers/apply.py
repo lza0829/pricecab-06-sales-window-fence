@@ -25,6 +25,11 @@ def list_batches():
     return svc.list_batches()
 
 
+@router.get("/rejections")
+def list_rejections():
+    return svc.list_rejections()
+
+
 @router.post("/due")
 def apply_due():
     return svc.apply_due()

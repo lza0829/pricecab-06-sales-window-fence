@@ -35,3 +35,30 @@ def list_batches(conn: sqlite3.Connection, limit: int = 50) -> list[dict[str, An
         (limit,),
     ).fetchall()
     return [dict(r) for r in rows]
+
+
+def add_rejection(
+    conn: sqlite3.Connection,
+    *,
+    batch_id: int,
+    ticket_id: int,
+    ticket_no: str,
+    sku_code: str,
+    reason: str,
+    created_at: str,
+) -> None:
+    conn.execute(
+        '''
+        INSERT INTO apply_rejections(batch_id, ticket_id, ticket_no, sku_code, reason, created_at)
+        VALUES (?,?,?,?,?,?)
+        ''',
+        (batch_id, ticket_id, ticket_no, sku_code, reason, created_at),
+    )
+
+
+def list_rejections(conn: sqlite3.Connection, limit: int = 100) -> list[dict[str, Any]]:
+    rows = conn.execute(
+        "SELECT * FROM apply_rejections ORDER BY id DESC LIMIT ?",
+        (limit,),
+    ).fetchall()
+    return [dict(r) for r in rows]

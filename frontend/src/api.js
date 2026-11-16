@@ -27,7 +27,17 @@ export const api = {
     request('/api/apply/clock', { method: 'PUT', body: JSON.stringify({ business_clock }) }),
   applyDue: () => request('/api/apply/due', { method: 'POST' }),
   batches: () => request('/api/apply/batches'),
+  applyRejections: () => request('/api/apply/rejections'),
   priceBook: () => request('/api/prices/book'),
   history: (sku) => request(sku ? `/api/prices/history?sku_code=${encodeURIComponent(sku)}` : '/api/prices/history'),
-  reconcile: () => request('/api/reconcile/sales'),
+  reconConfig: () => request('/api/reconcile/config'),
+  saveReconConfig: (body) =>
+    request('/api/reconcile/config', { method: 'PUT', body: JSON.stringify(body) }),
+  runReconcile: () => request('/api/reconcile/run', { method: 'POST' }),
+  reconReports: () => request('/api/reconcile/reports'),
+  reconReport: (id) => request(`/api/reconcile/reports/${id}`),
+  reconFlags: (status) =>
+    request(status ? `/api/reconcile/flags?status=${encodeURIComponent(status)}` : '/api/reconcile/flags'),
+  resolveFlag: (id, note) =>
+    request(`/api/reconcile/flags/${id}/resolve`, { method: 'POST', body: JSON.stringify({ note }) }),
 }

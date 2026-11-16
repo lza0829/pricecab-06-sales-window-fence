@@ -8,6 +8,7 @@ from fastapi import HTTPException
 from app.db import connect
 from app.repositories import skus as sku_repo
 from app.repositories import tickets as ticket_repo
+from app.timeutil import norm_ts
 
 
 def _now() -> str:
@@ -43,6 +44,10 @@ def create_ticket(body: dict[str, Any]) -> dict[str, Any]:
         raise HTTPException(400, "标题必填")
     if not effective_at:
         raise HTTPException(400, "生效时刻必填")
+    try:
+        effective_at = norm_ts(effective_at)
+    except ValueError:
+        raise HTTPException(400, "生效时刻不是合法 ISO 时刻")
     if not lines:
         raise HTTPException(400, "至少一行改价明细")
 
